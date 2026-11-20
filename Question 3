@@ -1,0 +1,67 @@
+
+using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        // Connection string
+        string connectionString =
+            @"Data Source=.;Initial Catalog=CollegeDB;Integrated Security=True";
+
+        // Create connection
+        SqlConnection con = new SqlConnection(connectionString);
+
+        try
+        {
+            // Open database connection
+            con.Open();
+
+            Console.WriteLine("Database Connected Successfully!");
+
+            // Take updated student details
+            Console.Write("Enter Student ID to Update: ");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            Console.Write("Enter New Student Name: ");
+            string name = Console.ReadLine();
+
+            Console.Write("Enter New Student Age: ");
+            int age = Convert.ToInt32(Console.ReadLine());
+
+            // SQL Update Query
+            string query = "UPDATE Student SET Name = @name, Age = @age " +
+                           "WHERE StudentID = @id";
+
+            // Create SqlCommand
+            SqlCommand cmd = new SqlCommand(query, con);
+
+            // Add parameters
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@age", age);
+
+            // Execute update query
+            int result = cmd.ExecuteNonQuery();
+
+            if (result > 0)
+            {
+                Console.WriteLine("Student Details Updated Successfully!");
+            }
+            else
+            {
+                Console.WriteLine("Student Record Not Found!");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+        finally
+        {
+            // Close connection
+            con.Close();
+        }
+    }
+}
