@@ -1,0 +1,72 @@
+
+using System;
+using System.Data;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        // Connection string
+        string connectionString =
+            @"Data Source=.;Initial Catalog=CollegeDB;Integrated Security=True";
+
+        try
+        {
+            // Create SQL Connection
+            SqlConnection con = new SqlConnection(connectionString);
+
+            // SQL Query
+            string query = "SELECT * FROM Student";
+
+            // Create SqlDataAdapter
+            SqlDataAdapter da = new SqlDataAdapter(query, con);
+
+            // Create DataSet
+            DataSet ds = new DataSet();
+
+            // Fill DataSet
+            da.Fill(ds, "Student");
+
+            // Enter Student ID
+            Console.Write("Enter Student ID to Update: ");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            // Find student record
+            DataRow[] rows = ds.Tables["Student"].Select(
+                "StudentID = " + id);
+
+            if (rows.Length > 0)
+            {
+                // Enter new details
+                Console.Write("Enter New Student Name: ");
+                string name = Console.ReadLine();
+
+                Console.Write("Enter New Student Age: ");
+                int age = Convert.ToInt32(Console.ReadLine());
+
+                // Update DataRow
+                rows[0]["Name"] = name;
+                rows[0]["Age"] = age;
+
+                // Generate UPDATE command
+                SqlCommandBuilder builder =
+                    new SqlCommandBuilder(da);
+
+                // Update database
+                da.Update(ds, "Student");
+
+                Console.WriteLine(
+                    "Student Record Updated Successfully!");
+            }
+            else
+            {
+                Console.WriteLine("Student Record Not Found!");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+    }
+}
