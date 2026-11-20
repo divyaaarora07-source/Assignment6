@@ -1,0 +1,47 @@
+
+using System;
+using System.Data;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        // Connection string
+        string connectionString =
+            @"Data Source=.;Initial Catalog=CollegeDB;Integrated Security=True";
+
+        // Create SQL Connection
+        SqlConnection con = new SqlConnection(connectionString);
+
+        try
+        {
+            // SQL Query
+            string query = "SELECT * FROM Student";
+
+            // Create SqlDataAdapter
+            SqlDataAdapter da = new SqlDataAdapter(query, con);
+
+            // Create DataSet
+            DataSet ds = new DataSet();
+
+            // Fill DataSet with records
+            da.Fill(ds, "Student");
+
+            // Display records
+            Console.WriteLine("Student Records:\n");
+
+            foreach (DataRow row in ds.Tables["Student"].Rows)
+            {
+                Console.WriteLine("Student ID: " + row["StudentID"]);
+                Console.WriteLine("Name: " + row["Name"]);
+                Console.WriteLine("Age: " + row["Age"]);
+                Console.WriteLine("----------------------");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+    }
+}
