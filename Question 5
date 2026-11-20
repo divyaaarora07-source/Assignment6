@@ -1,0 +1,64 @@
+
+using System;
+using System.Data;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        // Connection string
+        string connectionString =
+            @"Data Source=.;Initial Catalog=CollegeDB;Integrated Security=True";
+
+        try
+        {
+            // Create SQL Connection
+            SqlConnection con = new SqlConnection(connectionString);
+
+            // SQL Query
+            string query = "SELECT * FROM Student";
+
+            // Create SqlDataAdapter
+            SqlDataAdapter da = new SqlDataAdapter(query, con);
+
+            // Create DataSet
+            DataSet ds = new DataSet();
+
+            // Fill DataSet
+            da.Fill(ds, "Student");
+
+            // Take student details
+            Console.Write("Enter Student ID: ");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            Console.Write("Enter Student Name: ");
+            string name = Console.ReadLine();
+
+            Console.Write("Enter Student Age: ");
+            int age = Convert.ToInt32(Console.ReadLine());
+
+            // Create new DataRow
+            DataRow row = ds.Tables["Student"].NewRow();
+
+            row["StudentID"] = id;
+            row["Name"] = name;
+            row["Age"] = age;
+
+            // Add row to DataTable
+            ds.Tables["Student"].Rows.Add(row);
+
+            // Generate INSERT command
+            SqlCommandBuilder builder = new SqlCommandBuilder(da);
+
+            // Update database
+            da.Update(ds, "Student");
+
+            Console.WriteLine("Student Record Inserted Successfully!");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+    }
+}
